@@ -26,16 +26,16 @@
     io:format(Format, Args)).
 
 -define(DEBUG(Format, Args),
-    elogger:debug_msg(?MODULE,?LINE,Format, Args)).
+    elogger:debug(?MODULE,?LINE,Format, Args)).
 
 -define(INFO(Format, Args),
-    elogger:info_msg(?MODULE,?LINE,Format, Args)).
+    elogger:info(?MODULE,?LINE,Format, Args)).
 			      
 -define(WARNING(Format, Args),
-    elogger:warning_msg(?MODULE,?LINE,Format, Args)).
+    elogger:warning(?MODULE,?LINE,Format, Args)).
 			      
 -define(ERROR(Format, Args),
-    elogger:error_msg(?MODULE,?LINE,Format, Args)).
+    elogger:error(?MODULE,?LINE,Format, Args)).
 
 -define(CRITICAL(Format, Args),
-    elogger:critical_msg(?MODULE,?LINE,Format, Args)).
+    elogger:critical(?MODULE,?LINE,Format, Args)).

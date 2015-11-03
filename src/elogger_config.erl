@@ -86,45 +86,45 @@ elogger_src(Loglevel) ->
     %-module(ejabberd_logger).
     -author('mickael.remond@process-one.net').
 
-    -export([debug_msg/4,
-             info_msg/4,
-             warning_msg/4,
-             error_msg/4,
-             critical_msg/4,
+    -export([debugg/4,
+             info/4,
+             warning/4,
+             error/4,
+             critical/4,
              get/0]).
 
    get() -> "++ L ++".
 
     %% Helper functions
-    debug_msg(Module, Line, Format, Args) when " ++ L ++ " >= 5 ->
+    debug(Module, Line, Format, Args) when " ++ L ++ " >= 5 ->
             notify(info_msg,
                    \"D(~p:~p:~p) : \"++Format++\"~n\",
                    [self(), Module, Line]++Args);
-    debug_msg(_,_,_,_) -> ok.
+    debug(_,_,_,_) -> ok.
 
-    info_msg(Module, Line, Format, Args) when " ++ L ++ " >= 4 ->
+    info(Module, Line, Format, Args) when " ++ L ++ " >= 4 ->
             notify(info_msg,
                    \"I(~p:~p:~p) : \"++Format++\"~n\",
                    [self(), Module, Line]++Args);
-    info_msg(_,_,_,_) -> ok.
+    info(_,_,_,_) -> ok.
 
-    warning_msg(Module, Line, Format, Args) when " ++ L ++ " >= 3 ->
+    warning(Module, Line, Format, Args) when " ++ L ++ " >= 3 ->
             notify(warning,
                    \"W(~p:~p:~p) : \"++Format++\"~n\",
                    [self(), Module, Line]++Args);
-    warning_msg(_,_,_,_) -> ok.
+    warning(_,_,_,_) -> ok.
 
-    error_msg(Module, Line, Format, Args) when " ++ L ++ " >= 2 ->
+    error(Module, Line, Format, Args) when " ++ L ++ " >= 2 ->
             notify(error,
                    \"E(~p:~p:~p) : \"++Format++\"~n\",
                    [self(), Module, Line]++Args);
-    error_msg(_,_,_,_) -> ok.
+    error(_,_,_,_) -> ok.
 
-    critical_msg(Module, Line, Format, Args) when " ++ L ++ " >= 1 ->
+    critical(Module, Line, Format, Args) when " ++ L ++ " >= 1 ->
             notify(error,
                    \"C(~p:~p:~p) : \"++Format++\"~n\",
                    [self(), Module, Line]++Args);
-    critical_msg(_,_,_,_) -> ok.
+    critical(_,_,_,_) -> ok.
 
     %% Distribute the message to the Erlang error logger
     notify(Type, Format, Args) ->
