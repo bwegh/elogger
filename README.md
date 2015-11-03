@@ -13,6 +13,4 @@ In your module:
 -include("elogger.hrl"). % include the macros
 
 ?DEBUG("say hello to the ~p",[world]). % and use the macro 
-
-elogger:debug("say hello to the ~p",[world]). %or just use the function
 ```
