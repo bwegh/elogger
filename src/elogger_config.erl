@@ -29,10 +29,10 @@
 %%%----------------------------------------------------------------------
 
 % -module(ejabberd_loglevel).
--module(elogger_loglevel).
+-module(elogger_config).
 -author('mickael.remond@process-one.net').
 
--export([set/1, get/0]).
+-export([set_loglevel/1, get_loglevel/0, add_file_logging/1]).
 
 -include("elogger.hrl").
 
@@ -47,24 +47,24 @@
                     ,{5, debug, "Debug"}
                     ]).
 
-get() ->
-    Level = ejabberd_logger:get(),
+get_loglevel() ->
+    Level = elogger:get(),
     case lists:keysearch(Level, 1, ?LOG_LEVELS) of
         {value, Result} -> Result;
         _ -> erlang:error({no_such_loglevel, Level})
     end.
 
 
-set(LogLevel) when is_atom(LogLevel) ->
-    set(level_to_integer(LogLevel));
-set(Loglevel) when is_integer(Loglevel) ->
+set_loglevel(LogLevel) when is_atom(LogLevel) ->
+    set_loglevel(level_to_integer(LogLevel));
+set_loglevel(Loglevel) when is_integer(Loglevel) ->
     try
         {Mod,Code} = elogger_dc:from_string(elogger_src(Loglevel)),
         code:load_binary(Mod, ?LOGMODULE ++ ".erl", Code)
     catch
-        Type:Error -> ?CRITICAL_MSG("Error compiling logger (~p): ~p~n", [Type, Error])
+        Type:Error -> ?CRITICAL("Error compiling logger (~p): ~p~n", [Type, Error])
     end;
-set(_) ->
+set_loglevel(_) ->
     exit("Loglevel must be an integer").
 
 level_to_integer(Level) ->
@@ -72,6 +72,9 @@ level_to_integer(Level) ->
         {value, {Int, Level, _Desc}} -> Int;
         _ -> erlang:error({no_such_loglevel, Level})
     end.
+
+add_file_logging(File) ->
+  error_logger:add_report_handler(elogger_file_handler, File).
 
 %% --------------------------------------------------------------
 %% Code of the ejabberd logger, dynamically compiled and loaded
