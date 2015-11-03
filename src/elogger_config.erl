@@ -86,7 +86,7 @@ elogger_src(Loglevel) ->
     %-module(ejabberd_logger).
     -author('mickael.remond@process-one.net').
 
-    -export([debugg/4,
+    -export([debug/4,
              info/4,
              warning/4,
              error/4,
