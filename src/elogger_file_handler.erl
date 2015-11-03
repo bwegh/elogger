@@ -59,7 +59,7 @@ init(File) ->
 %%          remove_handler                              
 %%----------------------------------------------------------------------
 handle_event(Event, State) ->
-    write_event(State#state.fd, {erlang:localtime(), Event}),
+    log_event(State#state.fd, {erlang:localtime(), Event}),
     {ok, State}.
 
 %%----------------------------------------------------------------------
@@ -90,7 +90,7 @@ handle_info({emulator, _GL, reopen}, State) ->
 	    Error
     end;
 handle_info({emulator, GL, Chars}, State) ->
-    write_event(State#state.fd, {erlang:localtime(), {emulator, GL, Chars}}),
+    log_event(State#state.fd, {erlang:localtime(), {emulator, GL, Chars}}),
     {ok, State};
 handle_info(_Info, State) ->
     {ok, State}.
@@ -114,14 +114,21 @@ reopen_log() ->
 %%%----------------------------------------------------------------------
 
 % Copied from erlang_logger_file_h.erl
-write_event(Fd, {Time, {_, _GL, {Pid, Format, Args}}}) ->
+log_event(Fd, {Time, {info_msg, _GL, {Pid, Format, Args}}})   ->
+  write_log_line(Fd, Time, Pid, Format, Args);
+log_event(Fd, {Time, {warning_msg, _GL, {Pid, Format, Args}}})   ->
+  write_log_line(Fd, Time, Pid, Format, Args);
+log_event(Fd, {Time, {error, _GL, {Pid, Format, Args}}})   ->
+  write_log_line(Fd, Time, Pid, Format, Args);
+log_event(_, _) ->
+    ok.
+
+write_log_line(Fd, Time, Pid, Format, Args) ->
   %very simple output ... just one line per log 
     T = write_time(Time),
     N = print_node(node(Pid)),
     Msg = io_lib:format(Format,Args),
-    file:write(Fd,T++N++Msg);
-write_event(_, _) ->
-    ok.
+    file:write(Fd,T++N++Msg).
 
 write_time({{Y, Mo,D}, {H, Mi, S}}) ->
   io_lib:format("~w-~.2.0w-~.2.0w ~.2.0w:~.2.0w:~.2.0w ",[Y,Mo,D,H,Mi,S]).
