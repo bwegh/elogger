@@ -136,7 +136,7 @@ write_time({{Y, Mo,D}, {H, Mi, S}}) ->
 print_node(Node) when is_atom(Node) ->
   print_node(atom_to_list(Node));
 print_node(Node) when is_list(Node) ->
-  io_lib:format("~s ",[Node]).
+  io_lib:format("[~s] ",[Node]).
 
 %% @doc Rename the log file if exists, to "*-old.log".
 %% This is needed in systems when the file must be closed before rotation (Windows).
