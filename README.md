@@ -2,8 +2,8 @@
 copy of ejabber_log with a bit of renaming/changes.
 
 ```Erlang
-elogger_loglevel:set(4).
-error_logger:add_report_handler(elogger_file_handler, "logfile.log");
+elogger_config:set_loglevel(info).
+elogger_config:add_file_logging("logfile.log").
 ```
 
 In your module:
