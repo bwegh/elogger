@@ -35,6 +35,7 @@
 
 -record(state, {fd, file}).
 
+-define(NL,[10]).
 %%%----------------------------------------------------------------------
 %%% Callback functions from gen_event
 %%%----------------------------------------------------------------------
@@ -118,10 +119,16 @@ log_event(Fd, {Time, {info_msg, _GL, {Pid, Format, Args}}})   ->
   write_log_line(Fd, Time, Pid, Format, Args);
 log_event(Fd, {Time, {warning_msg, _GL, {Pid, Format, Args}}})   ->
   write_log_line(Fd, Time, Pid, Format, Args);
+log_event(Fd, {Time, {error, Pid, {emulator, Frmt, Args}}}) ->
+  Format = "*** CRASH *** "++Frmt,
+  write_log_line(Fd, Time, Pid, Format, Args);
 log_event(Fd, {Time, {error, _GL, {Pid, Format, Args}}})   ->
   write_log_line(Fd, Time, Pid, Format, Args);
-log_event(Fd, {Time, Unknown}) ->
-  write_log_line(Fd, Time, self(), "unknown msg: ~p",[Unknown]). 
+log_event(_, {_Time, {info_report, _, _ }}) ->
+  %ignore info reports for now 
+  ok;
+log_event(Fd, {_Time, Unknown}) ->
+  write_debug_line(Fd, "unknown msg: ~p",[Unknown]). 
 
 write_log_line(Fd, Time, Pid, Format, Args) ->
   %very simple output ... just one line per log 
@@ -129,6 +136,14 @@ write_log_line(Fd, Time, Pid, Format, Args) ->
     N = print_node(node(Pid)),
     Msg = io_lib:format(Format,Args),
     file:write(Fd,T++N++Msg).
+
+write_debug_line(Fd, Format, Args) ->
+    Time = erlang:localtime(),
+    T = write_time(Time),
+    N = print_node(node(self())),
+    Msg = io_lib:format(Format,Args),
+    file:write(Fd,"*** DEBUG ***"++T++N++Msg).
+
 
 write_time({{Y, Mo,D}, {H, Mi, S}}) ->
   io_lib:format("~w-~.2.0w-~.2.0w ~.2.0w:~.2.0w:~.2.0w ",[Y,Mo,D,H,Mi,S]).

@@ -109,7 +109,7 @@ elogger_src(Loglevel) ->
     info(_,_,_,_) -> ok.
 
     warning(Module, Line, Format, Args) when " ++ L ++ " >= 3 ->
-            notify(warning,
+            notify(warning_msg,
                    \"W(~p:~p:~p) : \"++Format++\"~n\",
                    [self(), Module, Line]++Args);
     warning(_,_,_,_) -> ok.
@@ -122,7 +122,7 @@ elogger_src(Loglevel) ->
 
     critical(Module, Line, Format, Args) when " ++ L ++ " >= 1 ->
             notify(error,
-                   \"C(~p:~p:~p) : \"++Format++\"~n\",
+                   \"*** CRIT ***(~p:~p:~p) : \"++Format++\"~n\",
                    [self(), Module, Line]++Args);
     critical(_,_,_,_) -> ok.
 
