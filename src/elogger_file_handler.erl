@@ -120,8 +120,8 @@ log_event(Fd, {Time, {warning_msg, _GL, {Pid, Format, Args}}})   ->
   write_log_line(Fd, Time, Pid, Format, Args);
 log_event(Fd, {Time, {error, _GL, {Pid, Format, Args}}})   ->
   write_log_line(Fd, Time, Pid, Format, Args);
-log_event(_, _) ->
-    ok.
+log_event(Fd, {Time, Unknown}) ->
+  write_log_line(Fd, Time, self(), "unknown msg: ~p",[Unknown]). 
 
 write_log_line(Fd, Time, Pid, Format, Args) ->
   %very simple output ... just one line per log 
