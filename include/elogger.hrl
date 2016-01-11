@@ -28,6 +28,9 @@
 -define(DEBUG(Format, Args),
     elogger:debug(?MODULE,?LINE,Format, Args)).
 
+-define(DBG(Format, Args),
+    elogger:debug(?MODULE,?LINE,Format, Args)).
+
 -define(INFO(Format, Args),
     elogger:info(?MODULE,?LINE,Format, Args)).
 			      
