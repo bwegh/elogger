@@ -39,7 +39,7 @@
 -define(LOGMODULE, "error_logger").
 
 %% Error levels:
--define(LOG_LEVELS,[ {0, no_log, "No log"}
+-define(LOG_LEVELS,[ {0, no_log, "Off"}
                     ,{1, critical, "Critical"}
                     ,{2, error, "Error"}
                     ,{3, warning, "Warning"}
@@ -55,6 +55,8 @@ get_loglevel() ->
     end.
 
 
+set_loglevel(LogLevel) when is_list(LogLevel) ->
+    set_loglevel(level_to_integer(LogLevel));
 set_loglevel(LogLevel) when is_atom(LogLevel) ->
     set_loglevel(level_to_integer(LogLevel));
 set_loglevel(Loglevel) when is_integer(Loglevel) ->
@@ -67,6 +69,11 @@ set_loglevel(Loglevel) when is_integer(Loglevel) ->
 set_loglevel(_) ->
     exit("Loglevel must be an integer").
 
+level_to_integer(Level) when is_list(Level) ->
+    case lists:keysearch(Level, 3, ?LOG_LEVELS) of
+        {value, {Int, _Atom, Level}} -> Int;
+        _ -> erlang:error({no_such_loglevel, Level})
+    end;
 level_to_integer(Level) ->
     case lists:keysearch(Level, 2, ?LOG_LEVELS) of
         {value, {Int, Level, _Desc}} -> Int;
